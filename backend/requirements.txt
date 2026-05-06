@@ -1,0 +1,42 @@
+# ST8 Dark Intelligence — Backend Dependencies
+
+# FastAPI
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.12
+
+# Database
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# ClickHouse
+aiochclient==2.6.0
+clickhouse-driver==0.2.9
+
+# Redis + Celery
+redis==5.2.0
+celery[redis]==5.4.0
+kombu==5.4.2
+
+# Auth
+PyJWT==2.10.1
+bcrypt==4.2.1
+pydantic-settings==2.6.1
+
+# AI
+anthropic==0.40.0
+
+# Rate limiting
+slowapi==0.1.9
+
+# Web Push
+pywebpush==2.0.0
+
+# Utils
+python-dotenv==1.0.1
+httpx==0.28.1
+orjson==3.10.12
+
+# Logging
+structlog==24.4.0
