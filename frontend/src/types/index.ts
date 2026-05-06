@@ -62,14 +62,19 @@ export interface Order {
   store_id: string
   customer_id: string
   courier_id: string | null
+  picker_id: string | null
   status: OrderStatus
   items: OrderItem[]
   total_amount: number
   delivery_address: string
+  delivery_lat: number | null
+  delivery_lng: number | null
   notes: string | null
   created_at: string
   estimated_delivery_at: string | null
   actual_delivery_at: string | null
+  assembly_started_at: string | null
+  assembly_finished_at: string | null
 }
 
 export interface WSMessage {

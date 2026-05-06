@@ -10,7 +10,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
 from app.database import engine, Base
-from app.routers import auth, stores, products, orders, inventory, kitchen, analytics, ai, ws
+from app.routers import auth, stores, products, orders, inventory, kitchen, analytics, ai, ws, push
 from app.middleware.logging_middleware import LoggingMiddleware
 
 
@@ -59,6 +59,7 @@ app.include_router(kitchen.router, prefix="/kitchen", tags=["kitchen"])
 app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 app.include_router(ai.router, prefix="/ai", tags=["ai"])
 app.include_router(ws.router, prefix="/ws", tags=["websocket"])
+app.include_router(push.router, prefix="/push", tags=["push"])
 
 
 @app.get("/health")
