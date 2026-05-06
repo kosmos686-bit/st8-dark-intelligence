@@ -12,6 +12,37 @@ from app.routers.auth import get_current_user
 from app.routers.ws import manager as ws_manager
 from app.services.order_state import can_transition, can_role_transition
 from app.services import inventory_service
+from app.clickhouse import ch_insert
+import logging
+
+_log = logging.getLogger(__name__)
+
+
+async def _emit_order_events(order: Order, event_type: str) -> None:
+    """Записать событие заказа в ClickHouse (по строке на каждый item)."""
+    try:
+        now = datetime.utcnow()
+        rows = []
+        for item in order.items:
+            rows.append({
+                "event_time": now,
+                "store_id": str(order.store_id),
+                "order_id": str(order.id),
+                "customer_id": str(order.customer_id),
+                "event_type": event_type,
+                "product_id": str(item.get("product_id")),
+                "product_name": str(item.get("name", "")),
+                "category": str(item.get("category", "")),
+                "quantity": int(item.get("qty", 1)),
+                "amount": float(item.get("price", 0)) * int(item.get("qty", 1)),
+                "hour_of_day": now.hour,
+                "day_of_week": now.isoweekday(),
+                "weather_temp": 0.0,
+            })
+        if rows:
+            await ch_insert("order_events", rows)
+    except Exception as e:
+        _log.warning("ClickHouse emit failed (%s): %s", event_type, e)
 
 router = APIRouter()
 
@@ -131,6 +162,8 @@ async def create_order(
     await db.flush()
     await db.refresh(order)
 
+    await _emit_order_events(order, "created")
+
     await ws_manager.broadcast_to_store(str(order.store_id), {
         "type": "new_order",
         "payload": {"order_id": str(order.id), "total": order.total_amount, "items_count": len(order.items)},
@@ -175,6 +208,8 @@ async def update_order_status(
 
     await db.flush()
     await db.refresh(order)
+
+    await _emit_order_events(order, order.status.value)
 
     payload = {
         "type": "order_update",

@@ -16,6 +16,9 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
 )
 
+# Совместимый alias для Celery-тасков и сервисов
+async_session_maker = AsyncSessionLocal
+
 
 class Base(DeclarativeBase):
     pass
