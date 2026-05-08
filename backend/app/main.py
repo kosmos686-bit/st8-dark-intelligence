@@ -12,6 +12,7 @@ from app.config import settings
 from app.database import engine, Base
 from app.routers import auth, stores, products, orders, inventory, kitchen, analytics, ai, ws, push
 from app.middleware.logging_middleware import LoggingMiddleware
+from app.middleware.security_middleware import SecurityHeadersMiddleware
 
 
 @asynccontextmanager
@@ -44,10 +45,11 @@ app.add_middleware(
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allow_headers=["*"],
+    allow_headers=["Authorization", "Content-Type", "X-Requested-With"],
 )
 
 app.add_middleware(LoggingMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 # Роуты
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
