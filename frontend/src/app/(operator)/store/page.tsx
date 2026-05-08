@@ -32,6 +32,129 @@ const PRIORITY_COLOR: Record<string, string> = {
   low: '#374151', normal: '#4B5563', high: '#D4A017', urgent: '#EF4444',
 }
 
+// ─── АВ Demo Order ────────────────────────────────────────────────────────────
+
+const NOW = Date.now()
+const AV_DEMO_ORDER: StoreOrder = {
+  id: 'av-demo-001',
+  number: 'АВ-20240508-001',
+  status: 'new',
+  customer: 'Наталья Соколова',
+  address: 'Тверская ул., д. 8, кв. 34',
+  channel: 'direct',
+  priority: 'high',
+  picker_id: null,
+  created_at: new Date(NOW).toISOString(),
+  deadline_at: new Date(NOW + 35 * 60 * 1000).toISOString(),
+  total: 3820,
+  notes: 'Домофон 34#, звоните за 5 мин до приезда',
+  items: [
+    { name: 'Лосось слабосолёный 300г', sku: 'AV-FISH-001',  zone: 'B', cell: 'B-12', qty: 1, price: 890,  picked: false },
+    { name: 'Бри де Мо 125г',           sku: 'AV-DAIRY-009', zone: 'A', cell: 'A-07', qty: 1, price: 650,  picked: false },
+    { name: 'Просекко Bisol 750мл',      sku: 'AV-ALC-042',  zone: 'F', cell: 'F-03', qty: 1, price: 1290, picked: false },
+    { name: 'Черника свежая 250г',       sku: 'AV-FRESH-017', zone: 'E', cell: 'E-15', qty: 1, price: 420,  picked: false },
+    { name: 'Авокадо Хасс 2шт',         sku: 'AV-FRESH-003', zone: 'E', cell: 'E-09', qty: 2, price: 190,  picked: false },
+    { name: 'Руккола 50г',              sku: 'AV-FRESH-031', zone: 'E', cell: 'E-18', qty: 1, price: 190,  picked: false },
+  ],
+}
+
+// ─── Demo Guide Modal ─────────────────────────────────────────────────────────
+
+function DemoGuideModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', h)
+    return () => window.removeEventListener('keydown', h)
+  }, [onClose])
+
+  const sections = [
+    {
+      icon: '📦', title: 'Новые',
+      what: 'Заказы поступают автоматически из приложения АВ, Яндекс.Еды, СберМаркета',
+      action: 'Нажми «Начать сборку» — заказ уйдёт к сборщику',
+    },
+    {
+      icon: '🛒', title: 'Сборка',
+      what: 'Сборщик идёт по AI-маршруту (E→B→A→F) и отмечает каждую позицию',
+      action: 'Прогресс-бар показывает сколько позиций уже собрано',
+    },
+    {
+      icon: '🔍', title: 'Проверка',
+      what: 'Контроль качества: сроки годности, целостность упаковки, температура',
+      action: 'Нажми «Готов к выдаче» — заказ ждёт курьера',
+    },
+    {
+      icon: '✅', title: 'Готов',
+      what: 'Пакет стоит на стойке выдачи с биркой. Курьер приедет через 2-3 мин',
+      action: 'Нажми «Выдать курьеру» — фиксируем время выдачи',
+    },
+    {
+      icon: '🛵', title: 'Выдан',
+      what: 'Курьер забрал заказ. В приложении клиента статус обновился на «В пути»',
+      action: 'SLA выполнен. Выручка зафиксирована',
+    },
+    {
+      icon: '⚡', title: 'AI Маршрут',
+      what: 'Claude AI строит оптимальный маршрут по складу, минимизируя время сборки',
+      action: 'Кнопка ⚡ на карточке или Ctrl+M',
+    },
+  ]
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'rgba(0,0,0,.8)', backdropFilter: 'blur(8px)',
+    }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: '92%', maxWidth: 600, borderRadius: 20,
+        background: '#0D1424', border: '1px solid rgba(212,160,23,.25)',
+        boxShadow: '0 32px 80px rgba(0,0,0,.8)', overflow: 'hidden',
+      }}>
+        <div style={{
+          padding: '16px 20px', borderBottom: '1px solid #1E2A3A',
+          background: 'rgba(212,160,23,.06)',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <span style={{ fontSize: 18 }}>🎯</span>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#D4A017' }}>Как работает dark store</div>
+            <div style={{ fontSize: 11, color: '#475569', marginTop: 1 }}>ST8 Dark Intelligence — сценарий Азбука Вкуса</div>
+          </div>
+          <button onClick={onClose} style={{ marginLeft: 'auto', color: '#475569', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}>×</button>
+        </div>
+        <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 10, maxHeight: '70vh', overflowY: 'auto' }}>
+          {sections.map(s => (
+            <div key={s.title} style={{
+              borderRadius: 12, padding: '12px 14px',
+              background: 'rgba(17,24,39,.8)', border: '1px solid #1E2A3A',
+              display: 'flex', gap: 12, alignItems: 'flex-start',
+            }}>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{s.icon}</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#E2E8F0', marginBottom: 4 }}>{s.title}</div>
+                <div style={{ fontSize: 12, color: '#64748B', marginBottom: 4 }}>{s.what}</div>
+                <div style={{ fontSize: 11, color: '#D4A017' }}>→ {s.action}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{
+            borderRadius: 12, padding: '12px 14px',
+            background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.2)',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#10B981', marginBottom: 6 }}>🎬 Чтобы показать вживую:</div>
+            <div style={{ fontSize: 12, color: '#6EE7B7', lineHeight: 1.7 }}>
+              1. Нажми <b style={{color:'#fff'}}>«🎬 АВ Заказ»</b> — появится реальный заказ Натальи Соколовой<br/>
+              2. Нажми <b style={{color:'#fff'}}>«⚡ Авто-сценарий»</b> — система автоматически проведёт его по всем этапам<br/>
+              3. Смотри тосты — там объяснения что происходит на каждом шаге<br/>
+              4. Нажми <b style={{color:'#fff'}}>«Сброс»</b> чтобы начать заново
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatTime(iso: string): string {
@@ -279,7 +402,10 @@ function OrderCard({
     new: 'picking', picking: 'check', check: 'ready', ready: 'dispatched',
   }
   const actionLabel: Partial<Record<KanbanStatus, string>> = {
-    new: 'Начать сборку', picking: 'Проверить', check: 'Готов', ready: 'Выдать',
+    new: '📦 Начать сборку',
+    picking: '🔍 На проверку',
+    check: '✅ Готов к выдаче',
+    ready: '🛵 Выдать курьеру',
   }
 
   return (
@@ -647,6 +773,8 @@ export default function StorePage() {
   const [toasts, setToasts] = useState<Toast[]>([])
   const [routeOrder, setRouteOrder] = useState<StoreOrder | null>(null)
   const [dragOverCol, setDragOverCol] = useState<string | null>(null)
+  const [showGuide, setShowGuide] = useState(false)
+  const [autoRunning, setAutoRunning] = useState(false)
   const draggingId = useRef<string | null>(null)
 
   function toast(msg: string, type: Toast['type'] = 'info') {
@@ -676,6 +804,60 @@ export default function StorePage() {
     draggingId.current = null
     setDragOverCol(null)
     moveOrder(orderId, colId as KanbanStatus)
+  }
+
+  function addAVOrder() {
+    const fresh = { ...AV_DEMO_ORDER, id: `av-${Date.now()}`, created_at: new Date().toISOString(), deadline_at: new Date(Date.now() + 35*60*1000).toISOString(), status: 'new' as KanbanStatus }
+    setOrders(prev => [fresh, ...prev.filter(o => o.id !== fresh.id)])
+    toast('📦 Новый заказ! Наталья Соколова — 3 820 ₽ · Азбука Вкуса · SLA 35 мин', 'info')
+  }
+
+  function runAutoScenario() {
+    if (autoRunning) return
+    setAutoRunning(true)
+    const id = `av-${Date.now()}`
+    const avOrder = { ...AV_DEMO_ORDER, id, created_at: new Date().toISOString(), deadline_at: new Date(Date.now() + 35*60*1000).toISOString(), status: 'new' as KanbanStatus }
+    const mikhail = DEMO_PICKERS.find(p => p.name.startsWith('Михаил')) ?? DEMO_PICKERS[0]
+
+    setOrders(prev => [avOrder, ...prev.filter(o => o.id !== id)])
+    toast('📦 Новый заказ: Наталья Соколова · Тверская 8 · 3 820 ₽', 'info')
+
+    setTimeout(() => {
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, picker_id: mikhail.id } : o))
+      toast(`👤 Назначен сборщик: ${mikhail.name} — ${mikhail.completed_today} сборок сегодня`, 'info')
+    }, 2000)
+
+    setTimeout(() => {
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'picking' } : o))
+      toast('🛒 Началась сборка · AI-маршрут: Зона E → B → A → F (оптимально)', 'success')
+    }, 4000)
+
+    setTimeout(() => {
+      setOrders(prev => prev.map(o => {
+        if (o.id !== id) return o
+        return { ...o, items: o.items.map((it, i) => i < 3 ? { ...it, picked: true } : it) }
+      }))
+      toast('✓ Собрано 3/6: Черника, Авокадо, Руккола — Зона E готова', 'info')
+    }, 6500)
+
+    setTimeout(() => {
+      setOrders(prev => prev.map(o => {
+        if (o.id !== id) return o
+        return { ...o, items: o.items.map(it => ({ ...it, picked: true })), status: 'check' }
+      }))
+      toast('✅ Сборка завершена за 7 мин · Передано на проверку качества', 'success')
+    }, 9000)
+
+    setTimeout(() => {
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'ready' } : o))
+      toast('🟢 Проверка пройдена · Лосось свеж, Бри в норме, Просекко охлаждено', 'success')
+    }, 11500)
+
+    setTimeout(() => {
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'dispatched' } : o))
+      toast('🛵 Выдан курьеру Алексею · Время сборки 11 мин · SLA: ✓ выполнен', 'success')
+      setAutoRunning(false)
+    }, 14000)
   }
 
   // Ctrl+M hotkey — open AI route for first picking order
@@ -740,12 +922,50 @@ export default function StorePage() {
             ))}
 
             <button
-              onClick={() => setOrders(DEMO_ORDERS)}
+              onClick={addAVOrder}
+              style={{
+                padding: '5px 12px', borderRadius: 8, fontSize: 11, fontWeight: 600,
+                background: 'rgba(212,160,23,.12)', border: '1px solid rgba(212,160,23,.3)',
+                color: '#D4A017', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+              }}
+              title="Добавить реальный заказ Азбуки Вкуса для демо"
+            >
+              🎬 АВ Заказ
+            </button>
+            <button
+              onClick={runAutoScenario}
+              disabled={autoRunning}
+              style={{
+                padding: '5px 12px', borderRadius: 8, fontSize: 11, fontWeight: 600,
+                background: autoRunning ? 'rgba(139,92,246,.05)' : 'rgba(139,92,246,.12)',
+                border: '1px solid rgba(139,92,246,.3)',
+                color: autoRunning ? '#4B5563' : '#A78BFA',
+                cursor: autoRunning ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', gap: 5,
+              }}
+              title="Автоматически провести заказ по всем этапам с объяснениями"
+            >
+              ⚡ {autoRunning ? 'Идёт демо...' : 'Авто-сценарий'}
+            </button>
+            <button
+              onClick={() => setShowGuide(true)}
+              style={{
+                padding: '5px 10px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.2)',
+                color: '#6EE7B7', cursor: 'pointer',
+              }}
+              title="Как работает система — объяснение для демо"
+            >
+              ?
+            </button>
+            <button
+              onClick={() => { setOrders(DEMO_ORDERS); setAutoRunning(false) }}
               style={{
                 padding: '5px 10px', borderRadius: 8, fontSize: 11,
                 background: 'rgba(59,130,246,.1)', border: '1px solid rgba(59,130,246,.2)',
                 color: '#93C5FD', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
               }}
+              title="Сбросить всё к начальному состоянию"
             >
               <RotateCcw size={11}/>
               Сброс
@@ -799,6 +1019,9 @@ export default function StorePage() {
       {routeOrder && (
         <AIRouteModal order={routeOrder} onClose={() => setRouteOrder(null)} />
       )}
+
+      {/* Demo Guide Modal */}
+      {showGuide && <DemoGuideModal onClose={() => setShowGuide(false)} />}
 
       {/* Toast */}
       <Toaster toasts={toasts} onRemove={removeToast} />
