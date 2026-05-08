@@ -1,6 +1,6 @@
 import { getToken, removeToken } from './auth'
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
 
 type RequestOptions = Omit<RequestInit, 'body'> & { body?: unknown }
 
