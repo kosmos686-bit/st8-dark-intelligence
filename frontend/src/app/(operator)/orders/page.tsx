@@ -328,10 +328,10 @@ function OrderCard({ order, pickers, onClick, onStatusAdvance }: OrderCardProps)
         </span>
         <ChannelBadge channel={order.channel} />
         {order.priority === 'urgent' && (
-          <AlertTriangle size={14} color="#EF4444" title="Срочно" />
+          <AlertTriangle size={14} color="#EF4444" />
         )}
         {order.priority === 'high' && (
-          <Star size={13} color="#D4A017" fill="#D4A017" title="Высокий" />
+          <Star size={13} color="#D4A017" fill="#D4A017" />
         )}
         <span style={{ flex: 1 }} />
         <CountdownTimer deadlineIso={order.deadline_at} />

@@ -95,7 +95,7 @@ function Toaster({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: number)
 // ─── AI Route Modal ───────────────────────────────────────────────────────────
 
 function AIRouteModal({ order, onClose }: { order: StoreOrder; onClose: () => void }) {
-  const zones = [...new Set(order.items.map(i => i.zone))].sort()
+  const zones = Array.from(new Set(order.items.map(i => i.zone))).sort()
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
@@ -330,8 +330,9 @@ function OrderCard({
 
         {/* Items summary */}
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {[...new Set(order.items.map(i => i.zone))].map(z => {
-            const zc = { A:'#3B82F6',B:'#EF4444',C:'#D4A017',D:'#8B5CF6',E:'#10B981',F:'#F97316',G:'#EC4899' }[z] ?? '#6B7280'
+          {Array.from(new Set(order.items.map(i => i.zone))).map(z => {
+            const ZONE_CLR: Record<string,string> = { A:'#3B82F6',B:'#EF4444',C:'#D4A017',D:'#8B5CF6',E:'#10B981',F:'#F97316',G:'#EC4899' }
+            const zc = ZONE_CLR[z] ?? '#6B7280'
             return (
               <span key={z} style={{
                 fontSize: 9, padding: '1px 6px', borderRadius: 4, fontWeight: 700,
