@@ -1,3 +1,5 @@
-export const dynamic = 'force-static'
-export function generateStaticParams() { return [] }
-export default function P() { return null }
+import PickingClient from './PickingClient'
+
+export default function PickingPage() {
+  return <PickingClient />
+}

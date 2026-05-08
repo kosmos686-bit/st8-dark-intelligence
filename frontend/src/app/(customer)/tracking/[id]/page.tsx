@@ -1,3 +1,5 @@
-export const dynamic = 'force-static'
-export function generateStaticParams() { return [] }
-export default function P() { return null }
+import TrackingClient from './TrackingClient'
+
+export default function TrackingPage() {
+  return <TrackingClient />
+}

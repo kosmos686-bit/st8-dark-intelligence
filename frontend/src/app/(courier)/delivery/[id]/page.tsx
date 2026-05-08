@@ -1,3 +1,5 @@
-export const dynamic = 'force-static'
-export function generateStaticParams() { return [] }
-export default function P() { return null }
+import DeliveryClient from './DeliveryClient'
+
+export default function DeliveryPage() {
+  return <DeliveryClient />
+}
